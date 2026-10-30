@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NOIR — Everyday Finds</title>
+<meta name="description" content="Discover thoughtful everyday essentials. Cash on delivery available.">
+<style>
+:root{--ink:#171717;--muted:#777;--cream:#f7f5f0;--line:#e8e5de;--accent:#b98a55}
+*{box-sizing:border-box}body{margin:0;background:var(--cream);color:var(--ink);font-family:Inter,Arial,sans-serif}
+header{position:sticky;top:0;background:#f7f5f0ed;backdrop-filter:blur(12px);z-index:5;border-bottom:1px solid var(--line)}
+.nav{max-width:1160px;margin:auto;padding:18px 22px;display:flex;align-items:center;justify-content:space-between}
+.logo{font-size:22px;letter-spacing:5px;font-weight:800}.nav small{color:var(--muted);letter-spacing:2px}
+button{cursor:pointer;border:0;background:var(--ink);color:white;padding:12px 17px;border-radius:3px;font-weight:700}
+button.secondary{background:white;color:var(--ink);border:1px solid var(--line)}
+.hero{max-width:1160px;margin:34px auto 25px;padding:65px 28px;background:#e9e3d8;display:grid;grid-template-columns:1.1fr .9fr;gap:25px;align-items:center}
+.eyebrow{font-size:11px;letter-spacing:3px;color:#806342;font-weight:800}.hero h1{font-family:Georgia,serif;font-weight:400;font-size:clamp(42px,6vw,72px);line-height:.98;margin:18px 0}.hero p{color:#5d5a54;line-height:1.7;max-width:430px}.hero-art{min-height:270px;background:linear-gradient(135deg,#c9b9a4,#eee8dc 55%,#a58d73);display:grid;place-items:center;color:#fff;font:italic 36px Georgia;letter-spacing:3px}
+.wrap{max-width:1160px;margin:0 auto;padding:25px 22px 70px}.section-head{display:flex;justify-content:space-between;align-items:end;margin:25px 0}.section-head h2{font:36px Georgia;margin:0}.section-head span{color:var(--muted);font-size:13px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}.card{background:white;border:1px solid var(--line)}.photo{height:230px;background:#e9e5dd;display:grid;place-items:center;color:#8a7b69;font:italic 23px Georgia}.info{padding:17px}.info h3{margin:0 0 8px;font-size:16px}.desc{color:var(--muted);font-size:13px;min-height:34px;line-height:1.5}.price{font-weight:800;margin:12px 0}.old{color:#999;text-decoration:line-through;font-weight:400;margin-left:8px;font-size:13px}.info button{width:100%}
+footer{border-top:1px solid var(--line);padding:28px 22px;text-align:center;color:var(--muted);font-size:12px;letter-spacing:1px}
+.modal{display:none;position:fixed;inset:0;background:#0008;z-index:10;overflow:auto;padding:20px}.box{background:white;max-width:560px;margin:35px auto;padding:25px;border-radius:5px}.box h2{font:30px Georgia;margin-top:0}.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}input,textarea,select{width:100%;padding:12px;border:1px solid var(--line);margin:6px 0 13px;font:inherit;border-radius:3px}label{font-size:12px;color:#555}.close{float:right;background:#eee;color:#222}.notice{font-size:12px;color:var(--muted);line-height:1.5}.admin{display:none;background:#fff;margin:20px auto;padding:22px;max-width:1160px;border:1px solid var(--line)}.admin h2{font:28px Georgia}.admin-grid{display:grid;grid-template-columns:1fr 1fr;gap:25px}.orders{font-size:13px;overflow:auto}.orders table{width:100%;border-collapse:collapse}.orders td,.orders th{padding:9px;border-bottom:1px solid var(--line);text-align:left}
+@media(max-width:700px){.hero{grid-template-columns:1fr;padding:38px 22px}.hero-art{min-height:170px}.grid{grid-template-columns:1fr 1fr;gap:12px}.photo{height:155px}.admin-grid{grid-template-columns:1fr}.row{grid-template-columns:1fr}.section-head h2{font-size:29px}}
+@media(max-width:420px){.grid{grid-template-columns:1fr}.photo{height:210px}}
+</style></head>
+<body>
+<header><div class="nav"><div><div class="logo" id="storeName">NOIR</div><small>CURATED EVERYDAY GOODS</small></div><div><button class="secondary" onclick="openCart()">Bag (<span id="count">0</span>)</button></div></div></header>
+<section class="hero"><div><div class="eyebrow">THE EVERYDAY EDIT · 2026</div><h1>Little things.<br>Better living.</h1><p>Thoughtfully picked essentials that bring a little more ease and style to your everyday. Discover your next favourite find.</p><button onclick="document.getElementById('products').scrollIntoView({behavior:'smooth'})">EXPLORE COLLECTION</button></div><div class="hero-art">THE EDIT</div></section>
+<main class="wrap" id="products"><div class="section-head"><h2>Shop the collection</h2><span>Cash on delivery available</span></div><div class="grid" id="productGrid"></div></main>
+<section class="admin" id="admin"><h2>Store dashboard</h2><p class="notice">Private admin area. Keep your admin PIN confidential. Orders are stored in your connected Google Sheet.</p><div class="admin-grid"><div><h3>Add / update product</h3><input id="pid" type="hidden"><label>Product name</label><input id="pname" placeholder="Product name"><label>Price (₹)</label><input id="pprice" type="number" placeholder="999"><label>Compare-at price (₹, optional)</label><input id="pold" type="number" placeholder="1299"><label>Image URL (optional)</label><input id="pimage" placeholder="https://..."><label>Short description</label><textarea id="pdesc" placeholder="A short product description"></textarea><button onclick="saveProduct()">Save product</button> <button class="secondary" onclick="clearProduct()">Clear</button></div><div><h3>Recent orders</h3><button class="secondary" onclick="loadOrders()">Refresh orders</button><div class="orders" id="orders"></div></div></div></section>
+<footer>NOIR · THOUGHTFUL FINDS FOR EVERY DAY · CUSTOMER SUPPORT: ADD YOUR EMAIL</footer>
+
+<div class="modal" id="cartModal"><div class="box"><button class="close" onclick="closeModal('cartModal')">✕</button><h2>Your bag</h2><div id="cartItems"></div><p id="cartTotal"></p><button onclick="showCheckout()">CONTINUE TO CHECKOUT</button></div></div>
+<div class="modal" id="checkoutModal"><div class="box"><button class="close" onclick="closeModal('checkoutModal')">✕</button><h2>Delivery details</h2><p class="notice">Payment method: Cash on delivery. Please check your details before placing the order.</p>
+<form id="checkoutForm" onsubmit="submitOrder(event)"><label>Full name</label><input name="name" required maxlength="80"><div class="row"><div><label>Mobile number</label><input name="phone" required inputmode="tel" maxlength="15"></div><div><label>PIN code</label><input name="pincode" required inputmode="numeric" maxlength="10"></div></div><label>Full delivery address</label><textarea name="address" required maxlength="400"></textarea><div class="row"><div><label>City</label><input name="city" required></div><div><label>State</label><input name="state" required></div></div><button type="submit">PLACE COD ORDER</button></form><p class="notice">Your details are used only to process and deliver this order. Add a proper privacy policy and contact details before going live.</p></div></div>
+<script>
+const API_URL = "PASTE_YOUR_APPS_SCRIPT_WEB_APP_URL_HERE";
+let products = [
+{id:"p1",name:"Everyday Carry Bottle",price:499,old:699,desc:"A clean, practical companion for daily routines.",image:""},
+{id:"p2",name:"Minimal Desk Organiser",price:799,old:999,desc:"Bring a little calm and order to your workspace.",image:""},
+{id:"p3",name:"Classic Utility Pouch",price:399,old:549,desc:"A versatile pouch for small everyday essentials.",image:""}
+];
+let cart=[];
+const money=n=>"₹"+Number(n).toLocaleString("en-IN");
+function render(){document.getElementById("productGrid").innerHTML=products.map(p=>`<article class="card"><div class="photo" ${p.image?`style="background-image:url('${esc(p.image)}');background-size:cover;background-position:center;color:transparent"`:""}>${p.image?"": "NOIR SELECT"}</div><div class="info"><h3>${esc(p.name)}</h3><div class="desc">${esc(p.desc||"")}</div><div class="price">${money(p.price)} ${p.old?`<span class="old">${money(p.old)}</span>`:""}</div><button onclick="add('${p.id}')">ADD TO BAG</button></div></article>`).join("");document.getElementById("count").textContent=cart.reduce((a,b)=>a+b.qty,0)}
+function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function add(id){let x=cart.find(i=>i.id===id);x?x.qty++:cart.push({id,qty:1});render()}
+function openCart(){document.getElementById("cartItems").innerHTML=cart.length?cart.map(i=>{let p=products.find(p=>p.id===i.id);return `<p>${esc(p.name)} × ${i.qty} — ${money(p.price*i.qty)} <button class="secondary" onclick="removeItem('${i.id}')">Remove</button></p>`}).join(""):"Your bag is empty.";document.getElementById("cartTotal").textContent="Total: "+money(cart.reduce((s,i)=>s+products.find(p=>p.id===i.id).price*i.qty,0));document.getElementById("cartModal").style.display="block"}
+function removeItem(id){cart=cart.filter(i=>i.id!==id);openCart();render()}
+function showCheckout(){if(!cart.length)return alert("Your bag is empty.");closeModal("cartModal");document.getElementById("checkoutModal").style.display="block"}
+function closeModal(id){document.getElementById(id).style.display="none"}
+async function api(action,data={}){if(API_URL.startsWith("PASTE_"))throw Error("Connect your free Google Apps Script backend first.");let r=await fetch(API_URL,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify({action,...data})});return await r.json()}
+async function submitOrder(e){e.preventDefault();let f=Object.fromEntries(new FormData(e.target));let items=cart.map(i=>{let p=products.find(p=>p.id===i.id);return {id:p.id,name:p.name,price:p.price,qty:i.qty}});let total=items.reduce((s,i)=>s+i.price*i.qty,0);try{let out=await api("createOrder",{customer:f,items,total});if(!out.ok)throw Error(out.error||"Could not save order");alert("Order placed! Your order ID is "+out.orderId);cart=[];render();e.target.reset();closeModal("checkoutModal")}catch(err){alert(err.message+"\\nFor this preview, orders cannot be sent until the backend is connected.")}}
+async function loadProducts(){try{let r=await fetch(API_URL+"?action=products");let d=await r.json();if(d.ok&&d.products.length)products=d.products}catch(e){}render()}
+function adminLogin(){let pin=prompt("Enter your store admin PIN");if(!pin)return;sessionStorage.setItem("adminPin",pin);document.getElementById("admin").style.display="block";loadOrders()}
+async function saveProduct(){let p={id:document.getElementById("pid").value||"p"+Date.now(),name:document.getElementById("pname").value.trim(),price:Number(document.getElementById("pprice").value),old:Number(document.getElementById("pold").value)||"",image:document.getElementById("pimage").value.trim(),desc:document.getElementById("pdesc").value.trim()};if(!p.name||!p.price)return alert("Enter product name and price.");try{let d=await api("saveProduct",{pin:sessionStorage.getItem("adminPin"),product:p});if(!d.ok)throw Error(d.error);products=d.products;render();clearProduct();alert("Product saved.")}catch(e){alert(e.message)}}
+function clearProduct(){["pid","pname","pprice","pold","pimage","pdesc"].forEach(x=>document.getElementById(x).value="")}
+async function loadOrders(){try{let d=await api("getOrders",{pin:sessionStorage.getItem("adminPin")});if(!d.ok)throw Error(d.error);document.getElementById("orders").innerHTML="<table><tr><th>Order</th><th>Customer</th><th>Total</th><th>Address</th></tr>"+d.orders.map(o=>`<tr><td>${esc(o.orderId)}</td><td>${esc(o.name)}<br>${esc(o.phone)}</td><td>${money(o.total)}</td><td>${esc(o.address)}, ${esc(o.city)}, ${esc(o.state)} - ${esc(o.pincode)}</td></tr>`).join("")+"</table>"}catch(e){document.getElementById("orders").textContent=e.message}}
+document.addEventListener("keydown",e=>{if(e.altKey&&e.shiftKey&&e.key.toLowerCase()==="a")adminLogin()});
+loadProducts();
+</script></body></html>
